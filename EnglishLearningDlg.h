@@ -40,8 +40,19 @@ public:
 	afx_msg void OnTimer(UINT nIDEvent);
 
 	afx_msg void OnMenuOpenFile();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	// 进度条
 	CSliderCtrl m_slider;
 	// 播放时间
 	CStatic m_static_time;
+	// 序号
+	CEdit m_edit_no;
+	// 开始播放时间
+	CEdit m_edit_starttime;
+	// 结束播放时间
+	CEdit m_edit_endtime;
+	afx_msg void OnBnClickedBtnSaveConfig();
+
+	afx_msg void OnBnClickedBtnReadConfig();
+	afx_msg void OnBnClickedBtnSeek();
 };

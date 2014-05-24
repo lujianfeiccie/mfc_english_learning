@@ -6,7 +6,7 @@
 #include "EnglishLearning.h"
 #include "EnglishLearningDlg.h"
 #include "afxdialogex.h"
-
+#define TIME_DELAY 100
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -59,6 +59,9 @@ void CEnglishLearningDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SLIDER1, m_slider);
 	DDX_Control(pDX, IDC_STATIC_TIME, m_static_time);
+	DDX_Control(pDX, IDC_EDIT_NO, m_edit_no);
+	DDX_Control(pDX, IDC_EDIT_START, m_edit_starttime);
+	DDX_Control(pDX, IDC_EDIT_END, m_edit_endtime);
 }
 
 BEGIN_MESSAGE_MAP(CEnglishLearningDlg, CDialogEx)
@@ -68,8 +71,12 @@ BEGIN_MESSAGE_MAP(CEnglishLearningDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_STOP, &CEnglishLearningDlg::OnBnClickedBtnStop)
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
+	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_BTN_PLAY, &CEnglishLearningDlg::OnBnClickedBtnPlay)
 	ON_COMMAND(ID_MENU_OPEN,&CEnglishLearningDlg::OnMenuOpenFile)
+	ON_BN_CLICKED(IDC_BTN_SAVE_CONFIG, &CEnglishLearningDlg::OnBnClickedBtnSaveConfig)
+	ON_BN_CLICKED(IDC_BTN_READ_CONFIG, &CEnglishLearningDlg::OnBnClickedBtnReadConfig)
+	ON_BN_CLICKED(IDC_BTN_SEEK, &CEnglishLearningDlg::OnBnClickedBtnSeek)
 END_MESSAGE_MAP()
 
 
@@ -204,12 +211,27 @@ void CEnglishLearningDlg::OnMenuOpenFile()
 			Util::LOG("LENGTH = %ld",length);
 			m_slider.SetRange(0,length);
 			SetTimeFormat("ms");
-			SetTimer(1,500,NULL);
+			SetTimer(1,TIME_DELAY,NULL);
 		}
 
 		CString s = FileDlg.GetFileName();
 		SetWindowTextA(s);
 	}
+}
+void CEnglishLearningDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	CString strMode = GetMode();
+	if(! strMode.CompareNoCase("playing"))
+	{
+		Stop();
+	}
+	int nSPos = m_slider.GetPos();
+	Seek(nSPos);
+	if(!strMode.CompareNoCase("playing"))
+	{
+		Play();
+	}
+	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 void CEnglishLearningDlg::OnTimer(UINT nIDEvent)
 {
@@ -220,13 +242,77 @@ void CEnglishLearningDlg::OnTimer(UINT nIDEvent)
 		m_slider.SetPos(atoi(str));
 		m_static_time.SetWindowTextA(str);
 	}
+	else if(nIDEvent==2)
+	{
+		CString tempstr;
+		m_edit_endtime.GetWindowTextA(tempstr);
+		int endtime = atoi(tempstr);
+		if(m_slider.GetPos()>endtime)
+		{
+			Stop();
+			KillTimer(2);
+		}
+	}
 	CDialog::OnTimer(nIDEvent);
 }
 void CEnglishLearningDlg::OnClose()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString strMode = GetMode();
+	if(! strMode.CompareNoCase("playing"))
+	{
+		Stop();
+	}
 	KillTimer(1);
-	Stop();
 	EndDialog(IDCANCEL);
 	CDialog::OnClose();
+}
+
+void CEnglishLearningDlg::OnBnClickedBtnSaveConfig()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	Record record ;
+	CString tempstr;
+	m_edit_no.GetWindowTextA(tempstr);
+	record.no = atoi(tempstr);
+
+	m_edit_starttime.GetWindowTextA(tempstr);
+	record.starttime = atoi(tempstr);
+
+	m_edit_endtime.GetWindowTextA(tempstr);
+	record.endtime = atoi(tempstr);
+
+	Config::WriteConfig(&record);
+
+	MessageBox("保存成功","提示");
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnReadConfig()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	Record record ;
+	CString tempstr;
+	m_edit_no.GetWindowTextA(tempstr);
+	record.no = atoi(tempstr);
+	
+	Config::ReadConfig(&record);
+	tempstr.Format("%d",record.starttime);
+	m_edit_starttime.SetWindowTextA(tempstr);
+
+	tempstr.Format("%d",record.endtime);
+	m_edit_endtime.SetWindowTextA(tempstr);
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnSeek()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	
+	CString tempstr;
+	m_edit_starttime.GetWindowTextA(tempstr);
+	Seek(tempstr);
+	Play();
+	SetTimer(2,TIME_DELAY,NULL);
 }
