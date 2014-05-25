@@ -73,4 +73,16 @@ public:
 	afx_msg LRESULT OnMM_WOM_OPEN(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WOM_DONE(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WOM_CLOSE(UINT wParam, LONG lParam);
+	// 播放视频
+	CButton m_btn_play;
+	// 停止播放视频
+	CButton m_btn_stop;
+	// 开始录音
+	CButton m_btn_start_record;
+	// 停止录音
+	CButton m_btn_stop_record;
+	// 播放录音
+	CButton m_btn_play_record;
+	// 停止播放录音
+	CButton m_btn_stop_play_record;
 };

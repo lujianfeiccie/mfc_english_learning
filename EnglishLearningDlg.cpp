@@ -67,6 +67,12 @@ void CEnglishLearningDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_NO, m_edit_no);
 	DDX_Control(pDX, IDC_EDIT_START, m_edit_starttime);
 	DDX_Control(pDX, IDC_EDIT_END, m_edit_endtime);
+	DDX_Control(pDX, IDC_BTN_PLAY, m_btn_play);
+	DDX_Control(pDX, IDC_BTN_STOP, m_btn_stop);
+	DDX_Control(pDX, IDC_BTN_START_RECORDING, m_btn_start_record);
+	DDX_Control(pDX, IDC_BTN_STOP_RECORDING, m_btn_stop_record);
+	DDX_Control(pDX, IDC_BTN_PLAY_RECORD, m_btn_play_record);
+	DDX_Control(pDX, IDC_BTN_STOP_PLAYING_RECORD, m_btn_stop_play_record);
 }
 
 BEGIN_MESSAGE_MAP(CEnglishLearningDlg, CDialogEx)
@@ -127,7 +133,9 @@ BOOL CEnglishLearningDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-
+	m_btn_play_record.EnableWindow(FALSE);
+	m_btn_stop_record.EnableWindow(FALSE);
+	m_btn_stop_play_record.EnableWindow(FALSE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -340,12 +348,17 @@ void CEnglishLearningDlg::OnBnClickedBtnStartRecording()
 	m_pAudio->StartRecording(this->m_hWnd);
 	bRecording = TRUE;
 	bEnding = FALSE;
+	m_btn_start_record.EnableWindow(FALSE);
+	m_btn_stop_record.EnableWindow(TRUE);
 }
 
 
 void CEnglishLearningDlg::OnBnClickedBtnStopRecording()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_btn_start_record.EnableWindow(TRUE);
+	m_btn_stop_record.EnableWindow(FALSE);
+	m_btn_play_record.EnableWindow(TRUE);
 	if(!bPlaying)
 	{
 		return;
@@ -353,6 +366,8 @@ void CEnglishLearningDlg::OnBnClickedBtnStopRecording()
 
 	bEnding = TRUE;
 	m_pAudio->StopPlaying();
+
+
 }
 
 
@@ -366,6 +381,9 @@ void CEnglishLearningDlg::OnBnClickedBtnStopPlayingRecord()
 
 	bEnding = TRUE;
 	m_pAudio->StopPlaying();
+
+	m_btn_play_record.EnableWindow(TRUE);
+	m_btn_stop_play_record.EnableWindow(FALSE);
 }
 
 
@@ -379,6 +397,9 @@ void CEnglishLearningDlg::OnBnClickedBtnPlayRecord()
 	}
 
 	m_pAudio->StartPlaying(this->m_hWnd, bPlaying);
+
+	m_btn_stop_play_record.EnableWindow(TRUE);
+
 }
 
 
