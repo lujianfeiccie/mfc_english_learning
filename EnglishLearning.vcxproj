@@ -104,7 +104,7 @@
     <ClInclude Include="EnglishLearning.h" />
     <ClInclude Include="EnglishLearningDlg.h" />
     <ClInclude Include="MCIClass.h" />
-    <ClInclude Include="MyAudio.h" />
+    <ClInclude Include="MyAudioCls.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -115,7 +115,7 @@
     <ClCompile Include="EnglishLearning.cpp" />
     <ClCompile Include="EnglishLearningDlg.cpp" />
     <ClCompile Include="MCIClass.cpp" />
-    <ClCompile Include="MyAudio.cpp" />
+    <ClCompile Include="MyAudioCls.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

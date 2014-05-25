@@ -5,6 +5,7 @@
 #pragma once
 
 #include "MCIClass.h"
+#include "MyAudioCls.h"
 #include "afxwin.h"
 #include "afxcmn.h"
 // CEnglishLearningDlg 对话框
@@ -51,8 +52,25 @@ public:
 	CEdit m_edit_starttime;
 	// 结束播放时间
 	CEdit m_edit_endtime;
+	//录音机
+	CMyAudioCls* m_pAudio;
+	BOOL bPlaying;
+	BOOL bRecording;
+	BOOL bEnding;
+	BOOL bPaused;
 	afx_msg void OnBnClickedBtnSaveConfig();
 
 	afx_msg void OnBnClickedBtnReadConfig();
 	afx_msg void OnBnClickedBtnSeek();
+	afx_msg void OnBnClickedBtnStartRecording();
+	afx_msg void OnBnClickedBtnStopRecording();
+	afx_msg void OnBnClickedBtnStopPlayingRecord();
+	afx_msg void OnBnClickedBtnPlayRecord();
+
+	afx_msg LRESULT OnMM_WIM_OPEN(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WIM_DATA(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WIM_CLOSE(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WOM_OPEN(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WOM_DONE(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WOM_CLOSE(UINT wParam, LONG lParam);
 };

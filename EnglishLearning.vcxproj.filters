@@ -45,10 +45,10 @@
     <ClInclude Include="Util.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MyAudio.h">
+    <ClInclude Include="Config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
+    <ClInclude Include="MyAudioCls.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,10 +68,10 @@
     <ClCompile Include="Util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MyAudio.cpp">
+    <ClCompile Include="Config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
+    <ClCompile Include="MyAudioCls.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

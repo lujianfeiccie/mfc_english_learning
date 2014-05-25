@@ -52,6 +52,11 @@ CEnglishLearningDlg::CEnglishLearningDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEnglishLearningDlg::IDD, pParent),CMCIClass(m_hWnd)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	bRecording=FALSE;
+	bPlaying=FALSE;
+	bPaused=FALSE;
+	bEnding=FALSE;
+	m_pAudio = new CMyAudioCls;
 }
 
 void CEnglishLearningDlg::DoDataExchange(CDataExchange* pDX)
@@ -77,6 +82,16 @@ BEGIN_MESSAGE_MAP(CEnglishLearningDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_SAVE_CONFIG, &CEnglishLearningDlg::OnBnClickedBtnSaveConfig)
 	ON_BN_CLICKED(IDC_BTN_READ_CONFIG, &CEnglishLearningDlg::OnBnClickedBtnReadConfig)
 	ON_BN_CLICKED(IDC_BTN_SEEK, &CEnglishLearningDlg::OnBnClickedBtnSeek)
+	ON_BN_CLICKED(IDC_BTN_START_RECORDING, &CEnglishLearningDlg::OnBnClickedBtnStartRecording)
+	ON_BN_CLICKED(IDC_BTN_STOP_RECORDING, &CEnglishLearningDlg::OnBnClickedBtnStopRecording)
+	ON_BN_CLICKED(IDC_BTN_STOP_PLAYING_RECORD, &CEnglishLearningDlg::OnBnClickedBtnStopPlayingRecord)
+	ON_BN_CLICKED(IDC_BTN_PLAY_RECORD, &CEnglishLearningDlg::OnBnClickedBtnPlayRecord)
+	ON_MESSAGE(MM_WIM_OPEN,OnMM_WIM_OPEN)
+	ON_MESSAGE(MM_WIM_DATA,OnMM_WIM_DATA)
+	ON_MESSAGE(MM_WIM_CLOSE,OnMM_WIM_CLOSE)
+	ON_MESSAGE(MM_WOM_OPEN,OnMM_WOM_OPEN)
+	ON_MESSAGE(MM_WOM_DONE,OnMM_WOM_DONE)
+	ON_MESSAGE(MM_WOM_CLOSE,OnMM_WOM_CLOSE)
 END_MESSAGE_MAP()
 
 
@@ -112,6 +127,7 @@ BOOL CEnglishLearningDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -315,4 +331,106 @@ void CEnglishLearningDlg::OnBnClickedBtnSeek()
 	Seek(tempstr);
 	Play();
 	SetTimer(2,TIME_DELAY,NULL);
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnStartRecording()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_pAudio->StartRecording(this->m_hWnd);
+	bRecording = TRUE;
+	bEnding = FALSE;
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnStopRecording()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if(!bPlaying)
+	{
+		return;
+	}
+
+	bEnding = TRUE;
+	m_pAudio->StopPlaying();
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnStopPlayingRecord()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if(!bPlaying)
+	{
+		return;
+	}
+
+	bEnding = TRUE;
+	m_pAudio->StopPlaying();
+}
+
+
+void CEnglishLearningDlg::OnBnClickedBtnPlayRecord()
+{
+	// TODO: 在此添加控件通知处理程序代码
+		// TODO: Add your control notification handler code here
+	if(bRecording)
+	{
+		m_pAudio->StopRecording();
+	}
+
+	m_pAudio->StartPlaying(this->m_hWnd, bPlaying);
+}
+
+
+
+LRESULT CEnglishLearningDlg::OnMM_WIM_OPEN(UINT wParam, LONG lParam)
+{
+	bRecording = TRUE;
+	m_pAudio->OnMM_WIM_OPEN();
+	return 0;
+}
+
+LRESULT CEnglishLearningDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam)
+{
+	m_pAudio->OnMM_WIM_DATA((PWAVEHDR)lParam, bEnding);
+	return 0;
+}
+
+LRESULT CEnglishLearningDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam)
+{
+	if(m_pAudio->GetDataLength()==0)
+	{
+		return 0;
+	}
+
+	m_pAudio->OnMM_WIM_CLOSE();
+
+	bRecording = FALSE;
+	return 0;
+}
+
+LRESULT CEnglishLearningDlg::OnMM_WOM_OPEN(UINT wParam, LONG lParam)
+{
+	m_pAudio->OnMM_WOM_OPEN();
+	bPlaying = TRUE;
+	bEnding = FALSE;
+	return 0;
+}
+
+LRESULT CEnglishLearningDlg::OnMM_WOM_DONE(UINT wParam, LONG lParam)
+{
+	m_pAudio->OnMM_WOM_DONE();
+
+	bPaused = FALSE;
+	bPlaying = FALSE;
+	return 0;
+}
+
+LRESULT CEnglishLearningDlg::OnMM_WOM_CLOSE(UINT wParam, LONG lParam)
+{
+	m_pAudio->OnMM_WOM_CLOSE();
+
+	bPaused = FALSE;
+	bPlaying = FALSE;
+	return 0;
 }
