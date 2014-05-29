@@ -224,9 +224,10 @@ void CEnglishLearningDlg::OnMenuOpenFile()
 		if(!stricmp(szExt,".avi")){
 			CString style;
 			style.Format(" %u ",WS_CHILD);
-			CStatic *pStatic=(CStatic*)GetDlgItem(IDC_STATIC_VIDEO);
-			HWND h=pStatic->GetSafeHwnd(); 
-			mciError = Open(szFileName,"MPEGVideo",style,h);
+			//CStatic *pStatic=(CStatic*)GetDlgItem(IDC_STATIC_VIDEO);
+			//HWND h=pStatic->GetSafeHwnd(); 
+			//mciError = Open(szFileName,"MPEGVideo",style,h);
+			mciError = Open(szFileName,"MPEGVideo"," overlapped ",this->m_hWnd);
 		}
 
 		if(mciError == 0)
@@ -240,6 +241,10 @@ void CEnglishLearningDlg::OnMenuOpenFile()
 
 		CString s = FileDlg.GetFileName();
 		SetWindowTextA(s);
+
+		strFileName.Replace(".avi",".time");
+		strcpy(Config::getInstance()->file_name,strFileName.GetBuffer(strFileName.GetLength()));
+		strFileName.ReleaseBuffer();
 	}
 }
 void CEnglishLearningDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -306,7 +311,7 @@ void CEnglishLearningDlg::OnBnClickedBtnSaveConfig()
 	m_edit_endtime.GetWindowTextA(tempstr);
 	record.endtime = atoi(tempstr);
 
-	Config::WriteConfig(&record);
+	Config::getInstance()->WriteConfig(&record);
 
 	MessageBox("保存成功","提示");
 }
@@ -321,7 +326,7 @@ void CEnglishLearningDlg::OnBnClickedBtnReadConfig()
 	m_edit_no.GetWindowTextA(tempstr);
 	record.no = atoi(tempstr);
 	
-	Config::ReadConfig(&record);
+	Config::getInstance()->ReadConfig(&record);
 	tempstr.Format("%d",record.starttime);
 	m_edit_starttime.SetWindowTextA(tempstr);
 

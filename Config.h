@@ -1,7 +1,5 @@
 #pragma once
 #define APP_NAME "APP_NAME"
-#define FILE_NAME "config.ini"
-
 typedef struct 
 {
    int no;
@@ -11,14 +9,18 @@ typedef struct
 class Config
 {
 public:	
+	static Config* getInstance();
+	char file_name[100];
 	Config(void);
 	~Config(void);
 private:
-	static void WriteConfig(const char* appname,const char* keyname,const char* value,const char* file);
-	static void WriteConfig(const char* keyname,const char* value);
-	static void ReadConfig(const char* appname,const char* keyname,	char* value,unsigned int size,const char* file);
-	static void ReadConfig(const char* keyname,char* value);
+	static Config* instance;
+	
+	void WriteConfig(const char* appname,const char* keyname,const char* value,const char* file);
+	void WriteConfig(const char* keyname,const char* value);
+	void ReadConfig(const char* appname,const char* keyname,	char* value,unsigned int size,const char* file);
+	void ReadConfig(const char* keyname,char* value);
 public:
-	static void ReadConfig(Record* record);
-	static void WriteConfig(const Record* record);
+	void ReadConfig(Record* record);
+	void WriteConfig(const Record* record);
 };
