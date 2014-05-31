@@ -85,4 +85,5 @@ public:
 	CButton m_btn_play_record;
 	// Í£Ö¹²¥·ÅÂ¼Òô
 	CButton m_btn_stop_play_record;
+	afx_msg void OnDeltaposSpinNo(NMHDR *pNMHDR, LRESULT *pResult);
 };

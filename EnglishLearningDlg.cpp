@@ -98,6 +98,7 @@ BEGIN_MESSAGE_MAP(CEnglishLearningDlg, CDialogEx)
 	ON_MESSAGE(MM_WOM_OPEN,OnMM_WOM_OPEN)
 	ON_MESSAGE(MM_WOM_DONE,OnMM_WOM_DONE)
 	ON_MESSAGE(MM_WOM_CLOSE,OnMM_WOM_CLOSE)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_NO, &CEnglishLearningDlg::OnDeltaposSpinNo)
 END_MESSAGE_MAP()
 
 
@@ -136,6 +137,8 @@ BOOL CEnglishLearningDlg::OnInitDialog()
 	m_btn_play_record.EnableWindow(FALSE);
 	m_btn_stop_record.EnableWindow(FALSE);
 	m_btn_stop_play_record.EnableWindow(FALSE);
+
+	m_edit_no.SetWindowTextA("0");
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -208,7 +211,7 @@ void CEnglishLearningDlg::OnBnClickedBtnStop()
 
 void CEnglishLearningDlg::OnMenuOpenFile()
 {
-	CString strFilter;
+	CString strFilter="Video File (*.avi)|*.avi||";
 	UpdateData(true);
 	CFileDialog FileDlg(true,NULL,NULL,OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT,
 		(LPCSTR)strFilter,this);
@@ -459,4 +462,31 @@ LRESULT CEnglishLearningDlg::OnMM_WOM_CLOSE(UINT wParam, LONG lParam)
 	bPaused = FALSE;
 	bPlaying = FALSE;
 	return 0;
+}
+
+void CEnglishLearningDlg::OnDeltaposSpinNo(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	CString strValue;
+	m_edit_no.GetWindowTextA(strValue);
+	int num = atoi(strValue);
+	if(!strValue.IsEmpty()){
+		switch(pNMUpDown->iDelta)            
+		{
+		case -1:
+		{
+				 strValue.SetAt(0 , strValue[0] + 1);   //编辑框首字母加1
+		}
+			break;
+		case 1:
+		{
+			if(num >0) 
+				 strValue.SetAt(0 , strValue[0] - 1);   //编辑框首字母加1
+		}
+			break;
+		}
+						 m_edit_no.SetWindowTextA(strValue);
+	}
+	*pResult = 0;
 }
