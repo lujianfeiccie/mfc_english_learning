@@ -476,17 +476,50 @@ void CEnglishLearningDlg::OnDeltaposSpinNo(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 		case -1:
 		{
-				 strValue.SetAt(0 , strValue[0] + 1);   //±à¼­¿òÊ××ÖÄ¸¼Ó1
+				 ++num;   //±à¼­¿òÊ××ÖÄ¸¼Ó1
 		}
 			break;
 		case 1:
 		{
 			if(num >0) 
-				 strValue.SetAt(0 , strValue[0] - 1);   //±à¼­¿òÊ××ÖÄ¸¼Ó1
+				 --num;   //±à¼­¿òÊ××ÖÄ¸¼õ1
 		}
 			break;
 		}
-						 m_edit_no.SetWindowTextA(strValue);
+		strValue.Format("%d",num);
+		m_edit_no.SetWindowTextA(strValue);
 	}
 	*pResult = 0;
+}
+void SelectAll(CEdit* edit)
+{
+	edit->SetSel(0,-1);	
+}
+//ÊµÏÖedit controlÈ«Ñ¡
+BOOL CEnglishLearningDlg::PreTranslateMessage(MSG* pMsg)
+{
+// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message==WM_KEYDOWN)
+	{
+	BOOL bCtrl=::GetKeyState(VK_CONTROL)&0x8000;
+	BOOL bShift=::GetKeyState(VK_SHIFT)&0x8000;
+
+	// only gets here if CTRL key is pressed
+	BOOL bAlt=::GetKeyState(VK_MENU)&0x8000;
+
+	//Util::LOG("Ctrl=%d Shift=%d Alt=%d Keycode=%d",bCtrl,bShift,bAlt,pMsg->wParam);
+	switch( pMsg->wParam )
+	{
+
+		case 'A':
+		if (bCtrl){
+			SelectAll(&m_edit_starttime);
+			SelectAll(&m_edit_endtime);
+			SelectAll(&m_edit_no);
+			//Util::LOG("Ctrl + A");			
+		}
+		break;
+		}
+	}
+return CDialog::PreTranslateMessage(pMsg);
 }

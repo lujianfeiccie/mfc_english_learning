@@ -86,4 +86,6 @@ public:
 	// 停止播放录音
 	CButton m_btn_stop_play_record;
 	afx_msg void OnDeltaposSpinNo(NMHDR *pNMHDR, LRESULT *pResult);
+	//实现全选的方法
+	BOOL PreTranslateMessage(MSG* pMsg);
 };
